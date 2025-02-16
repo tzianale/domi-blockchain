@@ -2,6 +2,9 @@ use crate::block::Block;
 use std::fs::File;
 use std::io::{Read, Write};
 use serde_json;
+use k256::ecdsa::{SigningKey, VerifyingKey};
+use rand::rngs::OsRng;
+use hex;
 
 pub struct Blockchain {
     pub chain: Vec<Block>,
@@ -16,6 +19,26 @@ impl Blockchain {
         Blockchain {
             chain: vec![Block::new(index, did, previous_hash, "0".to_string())],
         }
+    }
+
+    pub fn generate_key_pair() -> (String, String) {
+        // Generate a new private key
+        let signing_key = SigningKey::random(&mut OsRng);
+        let private_key_bytes = signing_key.to_bytes(); // 32-byte private key
+
+        // Derive the public key
+        let verifying_key = VerifyingKey::from(&signing_key);
+        let public_key_bytes = verifying_key.to_encoded_point(false); // Compressed public key
+
+        // Convert keys to hex format for storage
+        let private_key_hex = hex::encode(private_key_bytes);
+        let public_key_hex = hex::encode(public_key_bytes.as_bytes());
+
+        println!("🔑 New Key Pair Generated!");
+        println!("Private Key (Keep Safe!): {}", private_key_hex);
+        println!("Public Key (Store on Blockchain): {}", public_key_hex);
+
+        (private_key_hex, public_key_hex)
     }
 
     
