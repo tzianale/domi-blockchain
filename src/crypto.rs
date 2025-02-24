@@ -20,7 +20,7 @@ impl Crypto {
         let signature: Signature = signing_key.sign(message.as_bytes());
         let signature_hex = hex::encode(signature.to_der());
 
-        println!("🖊️ Signed Message: {}", signature_hex);
+        println!("Signed Message: {}", signature_hex);
         Some(signature_hex)
     }
 
@@ -34,9 +34,9 @@ impl Crypto {
         let private_key_hex = hex::encode(private_key_bytes);
         let public_key_hex = hex::encode(public_key_bytes.as_bytes());
 
-        println!("New Key Pair Generated!");
-        println!("Private Key (Keep Safe!): {}", private_key_hex);
-        println!("Public Key (Store on Blockchain): {}", public_key_hex);
+        println!("New Key Pair Generated");
+        println!("Private Key: {}", private_key_hex);
+        println!("Public Key {}", public_key_hex);
 
         (private_key_hex, public_key_hex)
     }
@@ -46,7 +46,7 @@ impl Crypto {
         let public_key_bytes = match hex::decode(public_key) {
             Ok(bytes) => bytes,
             Err(_) => {
-                println!("❌ Invalid public key format");
+                println!("Invalid public key format");
                 return false;
             }
         };
@@ -54,7 +54,7 @@ impl Crypto {
         let verifying_key = match VerifyingKey::from_sec1_bytes(&public_key_bytes) {
             Ok(key) => key,
             Err(_) => {
-                println!("❌ Failed to create verifying key");
+                println!("Failed to create verifying key");
                 return false;
             }
         };
@@ -63,7 +63,7 @@ impl Crypto {
         let signature_bytes = match hex::decode(signature) {
             Ok(bytes) => bytes,
             Err(_) => {
-                println!("❌ Invalid signature format");
+                println!("Invalid signature format");
                 return false;
             }
         };
@@ -71,7 +71,7 @@ impl Crypto {
         let signature = match Signature::from_der(&signature_bytes) {
             Ok(sig) => sig,
             Err(_) => {
-                println!("❌ Invalid signature bytes");
+                println!("Invalid signature bytes");
                 return false;
             }
         };
@@ -79,11 +79,11 @@ impl Crypto {
         // Verify the signature
         match verifying_key.verify(message.as_bytes(), &signature) {
             Ok(_) => {
-                println!("✅ Signature is valid");
+                println!("Signature is valid");
                 true
             }
             Err(_) => {
-                println!("❌ Signature verification failed");
+                println!("Signature verification failed");
                 false
             }
         }
