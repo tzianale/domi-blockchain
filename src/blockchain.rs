@@ -8,6 +8,7 @@ use rand::rngs::OsRng;
 use rand::Rng;
 use serde_json;
 
+#[derive(Clone)]
 pub struct Blockchain {
     pub chain: Vec<Block>,
 }
@@ -52,15 +53,15 @@ impl Blockchain {
         true
     }
 
-    fn get_latest_public_key(&self, did: String) -> Option<&Block> {
+    pub fn get_latest_public_key(&self, did: String) -> String {
         for block in self.chain.iter().rev() {
             if block.did == did {
                 println!("Latest public key for DID {}: {}", did, block.public_key);
-                return Some(block);
+                return block.public_key.to_string()
             }
         }
         println!("DID {} not found in the blockchain", did);
-        None
+        "".to_string()
     }
 
     pub fn save_to_file(&self, filename: &str) {
