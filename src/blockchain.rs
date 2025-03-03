@@ -64,6 +64,12 @@ impl Blockchain {
         "".to_string()
     }
 
+    pub fn generate_challenge(&self, did: String) -> String {
+        let nonce: u64 = rand::thread_rng().gen();
+        let challenge = format!("Login Challenge: {}:{}", did, nonce);
+        return challenge.to_string()
+    }
+
     pub fn save_to_file(&self, filename: &str) {
         let json = serde_json::to_string(&self.chain).expect("Failed to serialize blockchain");
         let mut file = File::create(filename).expect("Failed to create file");

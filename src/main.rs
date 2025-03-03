@@ -15,8 +15,8 @@ async fn main() {
     blockchain.write().unwrap().add_block("did:alexis".to_string(), "10011999".to_string());
 
     let app = Router::new()
-        .route("/secret", get(post_foo))
-        .route("/pubkey/:did", get(get_pubkey)).with_state(blockchain);
+        .route("/secret/:did", get(get_secret)).with_state(blockchain.clone())
+        .route("/pubkey/:did", get(get_pubkey)).with_state(blockchain.clone());
 
 
     let addr = "0.0.0.0:3000".parse().unwrap();
@@ -26,9 +26,9 @@ async fn main() {
         .unwrap();
 
 
-    async fn post_foo() -> String {
-        "Hello, I'm POST /foo!".to_string()
-    }
+    async fn get_secret(State(blockchain): State<Arc<RwLock<Blockchain>>>, Path(did): Path<String>) -> String {
+        blockchain.read().unwrap().generate_challenge(did).to_string()
+     }
 
     async fn get_pubkey(State(blockchain): State<Arc<RwLock<Blockchain>>>, Path(did): Path<String>) -> String {
        blockchain.read().unwrap().get_latest_public_key(did).to_string()
