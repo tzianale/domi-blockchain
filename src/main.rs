@@ -2,12 +2,12 @@ mod auth;
 mod block;
 mod blockchain;
 mod crypto;
+mod wallet;
 use axum::{
     extract::{Path, State},
-    routing::{get, post},
+    routing::get,
     Router,
 };
-use block::Block;
 use blockchain::Blockchain;
 use std::sync::{Arc, RwLock};
 
