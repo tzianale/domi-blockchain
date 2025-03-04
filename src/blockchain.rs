@@ -6,9 +6,10 @@ use hex;
 use k256::ecdsa::{signature::Signer, Signature, SigningKey, VerifyingKey};
 use rand::rngs::OsRng;
 use rand::Rng;
+use serde::Serialize;
 use serde_json;
 
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 pub struct Blockchain {
     pub chain: Vec<Block>,
 }
