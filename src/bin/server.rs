@@ -1,8 +1,3 @@
-mod auth;
-mod block;
-mod blockchain;
-mod crypto;
-mod wallet;
 use axum::{
     extract::{Path, State},
     response::IntoResponse,
@@ -10,9 +5,9 @@ use axum::{
     Json, Router,
 };
 use blockchain::Blockchain;
+use domi_blockchain::{auth, block, blockchain, crypto}; // Correct crate name
 use serde_json::{json, Value};
 use std::sync::{Arc, RwLock};
-
 #[tokio::main]
 async fn main() {
     let blockchain = Arc::new(RwLock::new(Blockchain::new()));
@@ -41,7 +36,7 @@ async fn main() {
     async fn get_secret(
         State(blockchain): State<Arc<RwLock<Blockchain>>>,
         Path(did): Path<String>,
-    ) -> String {
+    ) -> impl IntoResponse {
         blockchain
             .read()
             .unwrap()
@@ -69,7 +64,7 @@ async fn main() {
         blockchain.write().unwrap().add_block(did, pubkey);
     }
 
-    async fn get_blockchain(State(blockchain): State<Arc<RwLock<Blockchain>>>) -> Json<Value> {
+    async fn get_blockchain(State(blockchain): State<Arc<RwLock<Blockchain>>>) -> impl IntoResponse {
         let blockchain = blockchain.read().unwrap();
         let blockchain_json = serde_json::to_value(&*blockchain).unwrap();
 
