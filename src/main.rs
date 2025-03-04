@@ -53,4 +53,16 @@ async fn main() {
             .get_latest_public_key(did)
             .to_string()
     }
+
+
+    async fn add_block(
+        State(blockchain): State<Arc<RwLock<Blockchain>>>,
+        Path(did): Path<String>,
+    ) -> String {
+        blockchain
+            .read()
+            .unwrap()
+            .get_latest_public_key(did)
+            .to_string()
+    }
 }
