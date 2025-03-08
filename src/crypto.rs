@@ -8,7 +8,7 @@ use rand::rngs::OsRng;
 pub struct Crypto;
 
 impl Crypto {
-    pub fn sign_message(private_key_hex: &str, message: &str) -> Option<String> {
+    pub fn sign_message(private_key_hex: &String, message: &String) -> Option<String> {
         let private_key_bytes = hex::decode(private_key_hex).expect("Invalid hex for private key");
         let private_key_array: [u8; 32] = private_key_bytes
             .try_into()

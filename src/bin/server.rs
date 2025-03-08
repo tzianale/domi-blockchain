@@ -4,18 +4,14 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
+
 use blockchain::Blockchain;
-use domi_blockchain::{auth, block, blockchain, crypto}; // Correct crate name
-use serde_json::{json, Value};
+use domi_blockchain::blockchain; // Correct crate name
+use serde_json::Value;
 use std::sync::{Arc, RwLock};
 #[tokio::main]
 async fn main() {
     let blockchain = Arc::new(RwLock::new(Blockchain::new()));
-
-    blockchain
-        .write()
-        .unwrap()
-        .add_block("did:alexis".to_string(), "10011999".to_string());
 
     let app = Router::new()
         .route("/secret/:did", get(get_secret))
@@ -25,7 +21,7 @@ async fn main() {
         .route("/did/new", post(add_block))
         .with_state(blockchain.clone())
         .route("/blockchain", get(get_blockchain))
-        .with_state(blockchain);
+        .with_state(blockchain.clone());
 
     let addr = "0.0.0.0:3000".parse().unwrap();
     hyper::Server::bind(&addr)
@@ -59,15 +55,19 @@ async fn main() {
         State(blockchain): State<Arc<RwLock<Blockchain>>>,
         Json(payload): Json<Value>,
     ) {
-        let did = payload["did"].to_string();
-        let pubkey = payload["pubkey"].to_string();
+        let did = payload["did"].as_str().unwrap_or("").to_string();
+        let pubkey = payload["pubkey"].as_str().unwrap_or("").to_string();
+
         blockchain.write().unwrap().add_block(did, pubkey);
     }
 
-    async fn get_blockchain(State(blockchain): State<Arc<RwLock<Blockchain>>>) -> impl IntoResponse {
+    async fn get_blockchain(
+        State(blockchain): State<Arc<RwLock<Blockchain>>>,
+    ) -> impl IntoResponse {
         let blockchain = blockchain.read().unwrap();
         let blockchain_json = serde_json::to_value(&*blockchain).unwrap();
 
         Json(blockchain_json) // Return JSON response
     }
+
 }

@@ -67,7 +67,7 @@ impl Blockchain {
 
     pub fn generate_challenge(&self, did: String) -> String {
         let nonce: u64 = rand::thread_rng().gen();
-        let challenge = format!("Login Challenge: {}:{}", did, nonce);
+        let challenge = format!("{}:{}", did, nonce);
         return challenge.to_string()
     }
 
