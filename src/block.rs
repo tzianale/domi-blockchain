@@ -16,7 +16,7 @@ pub struct Block {
 impl Block {
     pub fn new(index: u64, did: String, previous_hash: String,  public_key: String  ) -> Block {
         let timestamp = Utc::now().timestamp();
-        let blockdata = format!("{}{}{}{}", index, timestamp, did, previous_hash);
+        let blockdata = format!("{}{}{}{}{}", index, timestamp, did, previous_hash, public_key);
         let mut hasher = Sha256::new();
         hasher.update(blockdata);
         let hash = format!("{:x}", hasher.finalize());

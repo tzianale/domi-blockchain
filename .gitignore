@@ -1,1 +1,23 @@
+# Rust build output
 /target
+
+# Wallet file — contains private key, never commit this
+wallet.json
+
+# Blockchain data file (when persistence is added)
+blockchain.json
+
+# Environment variables
+.env
+.env.local
+
+# Editor/IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Node leftovers from early scaffolding
+node_modules/
+package-lock.json

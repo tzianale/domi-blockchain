@@ -4,6 +4,7 @@ use k256::ecdsa::{
     Signature, SigningKey, VerifyingKey,
 };
 use rand::rngs::OsRng;
+use sha2::{Digest, Sha256};
 
 pub struct Crypto;
 
@@ -35,10 +36,19 @@ impl Crypto {
         let public_key_hex = hex::encode(public_key_bytes.as_bytes());
 
         println!("New Key Pair Generated");
-        println!("Private Key: {}", private_key_hex);
-        println!("Public Key {}", public_key_hex);
+        println!("Public Key: {}", public_key_hex);
 
         (private_key_hex, public_key_hex)
+    }
+
+    /// Derives a DID from a public key by hashing it with SHA256.
+    /// Takes the first 20 bytes (same length as an Ethereum address).
+    /// Result: "did:domi:<40 hex chars>"
+    pub fn derive_did(public_key_hex: &str) -> String {
+        let pub_key_bytes = hex::decode(public_key_hex).expect("Invalid public key hex");
+        let hash = Sha256::digest(&pub_key_bytes);
+        let did_hex = hex::encode(&hash[..20]);
+        format!("did:domi:{}", did_hex)
     }
 
     pub fn verify_signature(public_key: &str, message: &str, signature: &str) -> bool {
