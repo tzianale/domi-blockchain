@@ -61,7 +61,7 @@ Then open `http://127.0.0.1:4000/login` in your browser.
 
 ---
 
-## API endpoints (blockchain server)
+## API endpoints (blockchain server :3000) 
 
 | Method | Route | What it does |
 |--------|-------|--------------|
